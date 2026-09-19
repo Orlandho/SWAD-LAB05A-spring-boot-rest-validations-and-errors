@@ -1,0 +1,84 @@
+### ============================================================
+### ARCHIVO DE PRUEBAS HTTP - SPRING BOOT REST VALIDATIONS & ERRORS
+### Compatible con REST Client (VS Code / IntelliJ)
+### ============================================================
+
+@baseUrl = http://localhost:8080/api/productos
+
+### 1. Listar todos los productos (200 OK)
+GET {{baseUrl}}
+Accept: application/json
+
+### 2. Buscar producto por ID existente (200 OK)
+GET {{baseUrl}}/1
+Accept: application/json
+
+### 3. Buscar producto por ID inexistente (404 Not Found)
+GET {{baseUrl}}/999
+Accept: application/json
+
+### 4. Crear producto válido (201 Created) - stock < 5 -> estadoStock: INSUFICIENTE
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "nombre": "Monitor LG 24",
+  "categoria": "Monitores",
+  "precio": 699.90,
+  "stock": 3
+}
+
+### 5. Crear producto con datos inválidos (400 Bad Request)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "nombre": "",
+  "categoria": "",
+  "precio": -20.0,
+  "stock": -1
+}
+
+### 6. Intentar registrar producto con nombre duplicado (409 Conflict) [Reto Adicional]
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "nombre": "Monitor LG 24",
+  "categoria": "Monitores",
+  "precio": 699.90,
+  "stock": 10
+}
+
+### 7. Actualizar producto existente (200 OK) - stock >= 5 -> estadoStock: OK
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "nombre": "Monitor LG 24 Pro",
+  "categoria": "Monitores",
+  "precio": 679.90,
+  "stock": 8
+}
+
+### 8. Actualizar producto con datos inválidos (400 Bad Request)
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "nombre": "A",
+  "categoria": "M",
+  "precio": 0.0,
+  "stock": -5
+}
+
+### 9. Buscar productos por nombre (200 OK)
+GET {{baseUrl}}/buscar?nombre=LG
+Accept: application/json
+
+### 10. Eliminar producto por ID (204 No Content)
+DELETE {{baseUrl}}/1
+
+### 11. Verificar eliminación (404 Not Found)
+GET {{baseUrl}}/1
+Accept: application/json
